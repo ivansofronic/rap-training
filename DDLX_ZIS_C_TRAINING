@@ -1,0 +1,132 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Training',
+    typeNamePlural: 'Trainings',
+    title: {
+      type: #STANDARD,
+      label: 'Training',
+      value: 'Name'
+    }
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'CreatedAt', direction: #DESC }] }]
+}
+annotate view ZIS_C_Training with
+{
+  @UI.facet: [
+    {
+      id: 'HeaderIdInfo',
+      purpose: #HEADER,
+      position: 10,
+      label: 'Information',
+      importance: #HIGH,
+      type: #FIELDGROUP_REFERENCE,
+      targetQualifier: 'HeaderInfoFG'
+    },
+    {
+      id: 'HeaderIdAdmin',
+      purpose: #HEADER,
+      position: 10,
+      label: 'Administration',
+      importance: #HIGH,
+      type: #FIELDGROUP_REFERENCE,
+      targetQualifier: 'HeaderAdminFG'
+    },
+    {
+      id:'Training',
+      purpose:         #STANDARD,
+      type:            #IDENTIFICATION_REFERENCE,
+      label:           'Training',
+      position:        10
+    },
+    { 
+      id: 'ParticipantsID',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      position: 20,
+      targetElement: '_Participant'
+    },
+    { 
+      id: 'TasksID',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      position: 30,
+      targetElement: '_Task'
+    }
+  ]
+
+  @UI: {
+//    lineItem: [{ position: 10 }],
+    identification: [{ position: 10 }]
+//    selectionField: [{ position: 10 }]
+  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderInfoFG', position: 10 }]
+  TrainingUuid;
+
+  @UI: {
+    lineItem: [{ position: 20 },
+                { position: 20, type: #FOR_ACTION, label: 'Extend', dataAction: 'extendValidity' }],
+    identification: [{ position: 20 },
+                    { position: 20, type: #FOR_ACTION, label: 'Extend', dataAction: 'extendValidity' }],
+    selectionField: [{ position: 20 }]
+  }
+  //  @UI.fieldGroup: [{ qualifier: 'HeaderInfoFG', position: 20 }]
+  Name;
+
+  @UI: {
+    lineItem: [{ position: 30 }],
+    identification: [{ position: 30 }],
+    selectionField: [{ position: 30 }]
+  }
+  //  @UI.fieldGroup: [{ qualifier: 'HeaderInfoFG', position: 30 }]
+  Status;
+  
+  @UI: {
+    lineItem: [{ position: 35 }],
+    identification: [{ position: 35 }]
+//    selectionField: [{ position: 30 }]
+  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderInfoFG', position: 35 }]
+  ValidTo;  
+
+  @UI: {
+    lineItem: [{ position: 40, label: 'Created by' }]
+//    identification: [{ position: 40 }],
+//    selectionField: [{ position: 40 }]
+  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderAdminFG', position: 40, label: 'Created by' }]
+  CreatedBy;
+
+  @UI: {
+    lineItem: [{ position: 50, label: 'Created at' }]
+//    identification: [{ position: 50 }]
+  //    selectionField: [{ position: 50 }]
+  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderAdminFG', position: 50, label: 'Created at' }]
+  CreatedAt;
+
+//  @UI: {
+//  //    lineItem: [{ position: 60 }],
+//    identification: [{ position: 60 }]
+//  //    selectionField: [{ position: 60 }]
+//  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderAdminFG', position: 60, label: 'Changed by' }]
+  LastChangedBy;
+
+//  @UI: {
+  //    lineItem: [{ position: 70 }],
+//    identification: [{ position: 70 }]
+  //    selectionField: [{ position: 70 }]
+//  }
+  @UI.fieldGroup: [{ qualifier: 'HeaderAdminFG', position: 70, label: 'Changed at' }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+
+  @UI: {
+    lineItem: [{ position: 80, label: 'Key date' }],
+    identification: [{ position: 80, label: 'Key date' }]
+  }
+  KeyDate;  
+}
