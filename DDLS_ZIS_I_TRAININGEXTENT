@@ -1,0 +1,8 @@
+@EndUserText.label: 'Abstract to extend training validity'
+@Metadata.allowExtensions: true
+define abstract entity ZIS_I_TrainExtend
+//  with parameters parameter_name : parameter_type
+{
+  extend_until : bip_valid_to_kk;
+  comments: abap.string( 300 );
+}
