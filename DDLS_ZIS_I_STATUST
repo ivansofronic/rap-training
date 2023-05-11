@@ -1,0 +1,27 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Account Status text'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+define view entity ZIS_I_StatusT
+  as select from dd07t
+  association [0..1] to I_Language           as _Language      on $projection.Language = _Language.Language
+  association [1..1] to ZIS_I_Status as _Status on $projection.StatusText = _Status.Status
+{
+      @Semantics.language: true
+      @ObjectModel.foreignKey.association: '_Language'
+  key dd07t.ddlanguage                                  as Language,
+      @ObjectModel.foreignKey.association: '_Status'
+  key cast(LEFT( dd07t.domvalue_l, 1 ) as  DMC_DM_STATUS ) as Status,
+      @Semantics.text:true
+      dd07t.ddtext                                      as StatusText,
+      _Language,
+      _Status
+}
+where
+      dd07t.domname  = 'DMC_DM_STATUS'
+  and dd07t.as4local = 'A'
