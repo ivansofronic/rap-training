@@ -1,0 +1,48 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Training participant',
+    typeNamePlural: 'Training participants',
+    title: {
+      type: #STANDARD,
+      label: 'Participant',
+      value: 'FullName'
+    }
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'Participant', direction: #ASC }] }]
+}
+annotate entity ZIS_C_Participant with
+{
+  @UI.facet: [
+    {
+      id: 'ParticipantID',
+      type: #IDENTIFICATION_REFERENCE,
+      purpose: #STANDARD,
+      position: 10,
+      label: 'Participant'
+    },
+    { 
+      id: 'TasksID',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      position: 20,
+      targetElement: '_ParticipantTask'
+    }
+  ]
+
+  @UI.hidden: true
+  TrainingUuid;
+
+  @UI: {
+    lineItem: [{ position: 10 }],
+    identification: [{ position: 10 }],
+    selectionField: [{ position: 10 }]
+  }
+  Participant;
+
+//  @UI: {
+//    lineItem: [{ position: 20 }],
+//    identification: [{ position: 20 }]
+//  }
+//  TotalPoints;
+}
