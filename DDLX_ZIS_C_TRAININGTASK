@@ -1,0 +1,43 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Training task',
+    typeNamePlural: 'Training tasks',
+    title: {
+      type: #STANDARD,
+      label: 'Training task',
+      value: 'Taskid'
+    }
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'Taskid', direction: #ASC }] }]
+}
+annotate entity ZIS_C_TrainingTask with
+{
+  @UI.facet: [
+    {
+      id: 'TaskID',
+      type: #IDENTIFICATION_REFERENCE,
+      purpose: #STANDARD,
+      position: 10,
+      label: 'Task'
+    }
+  ]
+
+  @UI.hidden: true
+  TrainingUuid;
+
+  @UI: {
+    lineItem: [{ position: 10, label: 'Task' }],
+    identification: [{ position: 10, label: 'Task' }],
+    selectionField: [{ position: 10 }]
+  }
+  Taskid;
+
+  @UI: {
+    lineItem: [{ position: 20 }],
+    identification: [{ position: 20 }]
+  }
+  MaxPoints;
+
+
+}
