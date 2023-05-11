@@ -1,0 +1,30 @@
+@EndUserText.label: 'Training projection view'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Metadata.allowExtensions: true
+@Search.searchable: true
+define root view entity ZIS_C_Training
+  provider contract transactional_query
+  as projection on ZIS_I_Training
+{
+      @Search.defaultSearchElement: true
+  key TrainingUuid,
+      @Search.defaultSearchElement: true
+      Name,
+      @Search.defaultSearchElement: true
+      @ObjectModel.text.element: ['StatusText']
+      Status,
+      ValidTo,
+      @Search.defaultSearchElement: true
+      CreatedBy,
+      CreatedAt,
+      LastChangedBy,
+      LastChangedAt,
+      LocalLastChangedAt,
+      _Status._Text.StatusText as StatusText : localized,
+//    field to test how long the value retrieved form user is hold
+      KeyDate,
+      
+      _Participant : redirected to composition child ZIS_C_Participant,
+      _Task : redirected to composition child ZIS_C_TrainingTask,
+      _Status 
+}
