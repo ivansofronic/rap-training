@@ -1,0 +1,46 @@
+projection;// implementation in class zbp_is_c_training unique;
+strict ( 2 );
+
+
+define behavior for ZIS_C_Training alias Training
+use etag
+{
+  use create;// (augment);
+  use update;
+  use delete;
+  use action extendValidity;
+
+  use association _Participant { create; }
+  use association _Task { create; }
+
+}
+
+define behavior for ZIS_C_Participant alias Participant
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Training;
+  use association _ParticipantTask { create; }
+}
+
+define behavior for ZIS_C_TrainingTask alias Task
+use etag
+{
+  use update;
+  use delete;
+
+  use association _Training;
+}
+
+define behavior for ZIS_C_ParticTask alias ParticipantTask
+use etag
+{
+  use update;
+  use delete;
+  use action taskSolved;
+
+  use association _Training;
+  use association _Participant;
+}
