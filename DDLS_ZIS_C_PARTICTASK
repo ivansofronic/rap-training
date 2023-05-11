@@ -1,0 +1,26 @@
+@EndUserText.label: 'Participant tasks projection view'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Search.searchable: true
+@Metadata.allowExtensions: true
+define view entity ZIS_C_ParticTask
+  as projection on ZIS_I_ParticTask as ParticipantTask
+{
+  @Search.defaultSearchElement: true
+  key TrainingUuid,
+  @Search.defaultSearchElement: true
+  @ObjectModel.text.element: ['TaskName']
+  key Taskid,
+  @Search.defaultSearchElement: true
+  key Participant,
+      Score,
+      AssignedBy,
+      AssignedAt,
+      Solved,
+      SolvedAt,
+      _TrainingTask._Task.Name as TaskName,
+      
+      /* Associations */
+      _Participant : redirected to parent ZIS_C_Participant ,
+      _TrainingTask : redirected to ZIS_C_TrainingTask,
+      _Training : redirected to ZIS_C_Training
+}
