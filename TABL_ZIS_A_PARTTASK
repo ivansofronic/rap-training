@@ -1,0 +1,17 @@
+@EndUserText.label : 'Task assigned to participant'
+@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zis_a_parttask {
+  key client        : abap.clnt not null;
+  key training_uuid : sysuuid_x16 not null;
+  key taskid        : char20 not null;
+  key participant   : bu_partner not null;
+  score             : zis_score;
+  assigned_by       : syuname;
+  assigned_at       : timestampl;
+  solved            : zis_solved;
+  solved_at         : zis_solved_at;
+
+}
