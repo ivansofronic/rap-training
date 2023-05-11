@@ -1,0 +1,21 @@
+@EndUserText.label: 'Training participan projection view'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Metadata.allowExtensions: true
+@Search.searchable: true
+define view entity ZIS_C_Participant
+  //provider contract transactional_query
+  as projection on ZIS_I_Participant
+{
+  @Search.defaultSearchElement: true
+  key TrainingUuid,
+  @Search.defaultSearchElement: true
+  @ObjectModel.text.element: ['FullName']
+  key Participant,
+//      TotalPoints,
+      _Partner.BusinessPartnerFullName as FullName,
+      
+      /* Associations */
+      _Training : redirected to parent ZIS_C_Training,
+      _ParticipantTask : redirected to composition child ZIS_C_ParticTask,
+      _Partner
+}
