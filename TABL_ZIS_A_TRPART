@@ -1,0 +1,12 @@
+@EndUserText.label : 'Training participant'
+@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zis_a_trpart {
+  key client        : abap.clnt not null;
+  key training_uuid : sysuuid_x16 not null;
+  key participant   : bu_partner not null;
+  total_points      : zis_total_points;
+
+}
