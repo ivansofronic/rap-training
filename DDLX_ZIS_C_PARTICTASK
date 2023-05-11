@@ -1,0 +1,75 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Participant task',
+    typeNamePlural: 'Participant tasks',
+    title: {
+      type: #STANDARD,
+      label: 'Participant task',
+      value: 'TaskName'
+    }
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'Taskid', direction: #ASC }] }]
+}
+annotate entity ZIS_C_ParticTask with
+{
+  @UI.facet: [
+    {
+      id: 'TaskID',
+      type: #IDENTIFICATION_REFERENCE,
+      purpose: #STANDARD,
+      position: 10,
+      label: 'Task'
+    }
+  ]
+
+  @UI.hidden: true
+  TrainingUuid;
+  
+  @UI: {
+    lineItem: [{ position: 10, label: 'Task' } ],
+    identification: [{ position: 10, label: 'Task' }],
+    selectionField: [{ position: 10 }]
+  }  
+  Taskid;
+  
+  @UI.hidden: true
+  Participant;
+  
+  @UI: {
+    lineItem: [{ position: 20 }
+              ,{ type: #FOR_ACTION, dataAction: 'taskSolved', label: 'Solved', position: 10 }  
+                ],
+    identification: [{ position: 20 }]
+//    selectionField: [{ position: 10 }]
+  }  
+  Score;
+  
+  @UI: {
+    lineItem: [{ position: 30, label: 'Assigned by' }],
+    identification: [{ position: 30, label: 'Assigned by' }],
+    selectionField: [{ position: 30 }]
+  }  
+  AssignedBy;
+  
+  @UI: {
+    lineItem: [{ position: 40, label: 'Assigned at' }],
+    identification: [{ position: 40, label: 'Assigned at' }],
+    selectionField: [{ position: 40 }]
+  }  
+  AssignedAt;
+  
+  @UI: {
+    lineItem: [{ position: 50 }],
+    identification: [{ position: 50 }],
+    selectionField: [{ position: 50 }]
+  }  
+  Solved;  
+  
+  @UI: {
+    lineItem: [{ position: 60 }],
+    identification: [{ position: 60 }],
+    selectionField: [{ position: 60 }]
+  }  
+  SolvedAt;
+}
