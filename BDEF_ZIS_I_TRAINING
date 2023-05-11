@@ -1,0 +1,105 @@
+managed implementation in class zbp_is_i_training unique;
+strict ( 2 );
+
+define behavior for ZIS_I_Training alias Training
+persistent table zis_a_training
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+  association _Participant { create; }
+  association _Task { create; }
+
+  action ( features : instance ) extendValidity parameter ZIS_I_TrainExtend result [1] $self;
+
+  field ( numbering : managed, readonly ) TrainingUuid;
+  field ( readonly ) CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+  field ( mandatory ) Name;
+
+  determination setInitialValues on modify { create; }
+  determination setReadFieldOnChange on save { field Name; field Status; }
+
+  mapping for zis_a_training
+  {
+    TrainingUuid = training_uuid;
+    Name = name;
+    Status = status;
+    ValidTo = valid_to;
+    CreatedBy = created_by;
+    CreatedAt = created_at;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}
+
+define behavior for ZIS_I_Participant alias Participant
+persistent table zis_a_trpart
+lock dependent by _Training
+authorization dependent by _Training
+{
+	update;
+	delete;
+	
+	association _Training;
+	association _ParticipantTask { create; }
+	
+	field ( readonly ) TrainingUuid;
+	
+	mapping for zis_a_trpart
+	{
+      TrainingUuid = training_uuid;
+      Participant = participant;
+//      TotalPoints = total_points;	
+	}
+}
+
+define behavior for ZIS_I_TrainingTask alias Task
+persistent table zis_a_traintask
+lock dependent by _Training
+authorization dependent by _Training
+{
+  update;
+  delete;
+
+  association _Training;
+
+  field ( readonly ) TrainingUuid;
+
+  mapping for zis_a_traintask
+  {
+      TrainingUuid = training_uuid;
+      Taskid = taskid;
+      MaxPoints = max_points;
+  }
+}
+
+define behavior for ZIS_I_ParticTask alias ParticipantTask
+persistent table zis_a_parttask
+lock dependent by _Training
+authorization dependent by _Training
+{
+  update;
+  delete;
+  action ( features : instance ) taskSolved result [1] $self;
+
+  association _Participant;
+  association _Training;
+
+  field ( readonly ) TrainingUuid, Participant, AssignedBy, AssignedAt, SolvedAt;
+
+  mapping for zis_a_parttask
+  {
+      TrainingUuid = training_uuid;
+      Taskid = taskid;
+      Participant = participant;
+      Score = score;
+      AssignedBy = assigned_by;
+      AssignedAt = assigned_at;
+      Solved = solved;
+      SolvedAt = solved_at;
+  }
+}
