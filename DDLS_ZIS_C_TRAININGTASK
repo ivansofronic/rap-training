@@ -1,0 +1,16 @@
+@EndUserText.label: 'Training task projection view'
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@Metadata.allowExtensions: true
+define view entity ZIS_C_TrainingTask
+  as projection on ZIS_I_TrainingTask as TrainingTask
+{
+      @Consumption.valueHelpDefinition: [{entity:{name: 'ZIS_C_Training', element: 'TrainingUuid' }}]   
+  key TrainingUuid,
+      @ObjectModel.text.element: ['TaskName']   
+  key Taskid,
+      MaxPoints,
+      _Task.Name as TaskName,
+      /* Associations */
+      _Task,
+      _Training : redirected to parent ZIS_C_Training
+}
