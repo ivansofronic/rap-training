@@ -1,0 +1,220 @@
+CLASS lhc_participanttask DEFINITION INHERITING FROM cl_abap_behavior_handler.
+
+  PRIVATE SECTION.
+
+    METHODS taskSolved FOR MODIFY
+      IMPORTING keys FOR ACTION ParticipantTask~taskSolved RESULT result.
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR ParticipantTask RESULT result.
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR participanttask RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_participanttask IMPLEMENTATION.
+
+  METHOD taskSolved.
+    "task is solved so add points based on maximum score defined in task
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY ParticipantTask
+        FIELDS ( Solved Score SolvedAt ) WITH CORRESPONDING #( keys )
+      RESULT DATA(partictasks).
+
+    CHECK partictasks IS NOT INITIAL.
+
+    GET TIME STAMP FIELD DATA(timestamp).
+
+    MODIFY ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY ParticipantTask
+        UPDATE FIELDS ( Solved Score SolvedAt )
+        WITH VALUE #( FOR parttask IN partictasks
+                      ( %tky = parttask-%tky
+                        Solved = abap_true
+                        Score = 100
+                        SolvedAt = timestamp ) )
+      REPORTED DATA(reported_data).
+
+    reported = CORRESPONDING #( DEEP reported_data ).
+
+    "fill result
+    result = VALUE #( FOR parttask IN partictasks
+                      ( %tky = parttask-%tky
+                        %param = parttask ) ).
+
+  ENDMETHOD.
+
+  METHOD get_instance_authorizations.
+
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY ParticipantTask
+        FIELDS ( Solved Score SolvedAt ) WITH CORRESPONDING #( keys )
+      RESULT DATA(partictasks).
+
+    result =
+      VALUE #(
+        FOR parttask IN partictasks
+*          LET is_solved =   COND #( WHEN parttask-Solved = abap_true
+*                                      THEN if_abap_behv=>fc-o-disabled
+*                                      ELSE if_abap_behv=>fc-o-enabled  )
+*          IN
+*            ( %tky                 = parttask-%tky
+*              %action-taskSolved = is_solved
+*             ) ).
+          ( %tky                 = parttask-%tky
+            %action-taskSolved = COND #( WHEN parttask-Solved = abap_true
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled  )
+          )
+         ).
+
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lhc_Training DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    CONSTANTS:
+      BEGIN OF training_status,
+        open       TYPE numc01 VALUE '1', "Open
+        in_process TYPE numc01 VALUE '2', "In process
+        stopped    TYPE numc01 VALUE '3', "Stopped
+        aborted    TYPE numc01 VALUE '4', "Aborted
+        finished   TYPE numc01 VALUE '5', "Finished
+      END OF training_status.
+
+    METHODS setInitialValues FOR DETERMINE ON MODIFY
+      IMPORTING keys FOR Training~setInitialValues.
+
+*    METHODS augment_create FOR MODIFY
+*      IMPORTING entities_create FOR CREATE Training.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR Training RESULT result.
+    METHODS setreadfieldonchange FOR DETERMINE ON SAVE
+      IMPORTING keys FOR training~setreadfieldonchange.
+    METHODS extendvalidity FOR MODIFY
+      IMPORTING keys FOR ACTION training~extendvalidity RESULT result.
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR training RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_Training IMPLEMENTATION.
+
+  METHOD get_instance_authorizations.
+
+  ENDMETHOD.
+
+  METHOD setinitialvalues.
+
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        FIELDS ( Status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(trainings).
+
+    CHECK trainings IS NOT INITIAL.
+
+    GET TIME STAMP FIELD DATA(timestamp).
+
+    MODIFY ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        UPDATE
+          FIELDS ( Status CreatedAt CreatedBy )
+          WITH VALUE #( FOR training IN trainings
+                        ( %tky = training-%tky
+                          Status = training_status-open
+                          CreatedBy = sy-uname
+                          CreatedAt = timestamp
+                          %control-Status = if_abap_behv=>mk-on
+                          %control-CreatedBy = if_abap_behv=>mk-on
+                          %control-CreatedAt = if_abap_behv=>mk-on ) )
+      REPORTED DATA(modify_reported).
+
+    reported = CORRESPONDING #( DEEP modify_reported ).
+
+  ENDMETHOD.
+
+*  METHOD augment_create.
+*
+*    MODIFY AUGMENTING ENTITIES OF ZIS_C_Training
+*      ENTITY Training
+*      UPDATE FIELDS ( Name )
+*        WITH VALUE #( ( Name = 'Enter name' ) ).
+*
+*  ENDMETHOD.
+
+  METHOD setReadFieldOnChange.
+
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        FIELDS ( Status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(trainings).
+
+    CHECK trainings IS NOT INITIAL.
+
+    GET TIME STAMP FIELD DATA(timestamp).
+
+    MODIFY ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        UPDATE
+          FIELDS ( LastChangedBy LastChangedAt )
+          WITH VALUE #( FOR training IN trainings
+                        ( %tky = training-%tky
+                          LastChangedBy = cl_abap_context_info=>get_user_technical_name( )
+                          LastChangedAt = timestamp ) )
+      REPORTED DATA(modify_reported).
+
+    reported = CORRESPONDING #( DEEP modify_reported ).
+
+  ENDMETHOD.
+
+  METHOD extendValidity.
+
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        FIELDS ( ValidTo KeyDate )
+      WITH CORRESPONDING #( keys )
+      RESULT DATA(trainings).
+
+    CHECK trainings IS NOT INITIAL.
+
+    MODIFY ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        UPDATE
+          FIELDS ( ValidTo KeyDate )
+          WITH VALUE #( FOR key IN keys
+                        ( %tky = key-%tky
+                          KeyDate = key-%param-extend_until
+                          ValidTo = key-%param-extend_until ) ).
+
+    result = VALUE #( FOR training IN trainings
+                      ( %key = training-%key
+                        %param = training ) ).
+
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+
+    READ ENTITIES OF ZIS_I_Training IN LOCAL MODE
+      ENTITY Training
+        FIELDS ( ValidTo ) WITH CORRESPONDING #( keys )
+      RESULT DATA(trainings).
+
+    result =
+      VALUE #(
+        FOR training IN trainings
+          ( %tky                 = training-%tky
+            %action-extendValidity = COND #( WHEN training-ValidTo > cl_abap_context_info=>get_system_date( )
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled  )
+          )
+         ).
+
+  ENDMETHOD.
+
+ENDCLASS.
