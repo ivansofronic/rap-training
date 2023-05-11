@@ -1,0 +1,7 @@
+@EndUserText.label: 'Service definition for Training'
+define service ZIS_UI_Training {
+  expose ZIS_C_Training;
+  expose ZIS_C_Participant;
+  expose ZIS_C_TrainingTask;
+  expose ZIS_C_ParticTask;
+}
