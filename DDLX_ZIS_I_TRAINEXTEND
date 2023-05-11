@@ -1,0 +1,10 @@
+@Metadata.layer: #CORE
+annotate entity ZIS_I_TrainExtend
+  with 
+{
+  @EndUserText.label: 'New validity to:'
+  extend_until;
+  @EndUserText.label: 'Comments:'
+  comments;
+  
+}
