@@ -1,0 +1,44 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Task assigned to participant'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+@Search.searchable: true
+define view entity ZIS_I_ParticTask
+  as select from zis_a_parttask as ParticipantTask
+
+  association        to parent ZIS_I_Participant as _Participant  on  $projection.TrainingUuid = _Participant.TrainingUuid
+                                                                  and $projection.Participant  = _Participant.Participant
+
+  association [1..1] to ZIS_I_TrainingTask       as _TrainingTask on  $projection.TrainingUuid = _TrainingTask.TrainingUuid
+                                                                  and $projection.Taskid       = _TrainingTask.Taskid
+  association [1..1] to ZIS_I_Training           as _Training     on  $projection.TrainingUuid = _Training.TrainingUuid
+
+
+{
+      @Search.defaultSearchElement: true
+      @ObjectModel.text.element: ['_TrainingTask._Training.Name']
+      @Consumption.valueHelpDefinition: [{entity:{name: 'ZIS_I_TrainingTask', element: 'TrainingUuid' }}]
+  key training_uuid as TrainingUuid,
+      @Search.defaultSearchElement: true
+      @ObjectModel.text.element: ['_TrainingTask._Task.Name']
+      @Consumption.valueHelpDefinition: [{entity:{name: 'ZIS_I_TrainingTask', element: 'Taskid' }}]
+  key taskid        as Taskid,
+      @Search.defaultSearchElement: true
+      @ObjectModel.text.element: ['_Participant._Partner.BusinessPartnerFullName']
+  key participant   as Participant,
+      score         as Score,
+      assigned_by   as AssignedBy,
+      assigned_at   as AssignedAt,
+      solved        as Solved,
+      solved_at     as SolvedAt,
+
+      /* Associations */
+      _Participant,
+      _TrainingTask,
+      _Training
+}
