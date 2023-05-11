@@ -1,0 +1,18 @@
+@EndUserText.label : 'Training'
+@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zis_a_training {
+  key client            : abap.clnt not null;
+  key training_uuid     : sysuuid_x16 not null;
+  name                  : zis_training_name;
+  status                : dmc_dm_status;
+  valid_to              : bip_valid_to_kk;
+  created_by            : syuname;
+  created_at            : timestampl;
+  last_changed_by       : syuname;
+  last_changed_at       : timestampl;
+  local_last_changed_at : timestampl;
+
+}
