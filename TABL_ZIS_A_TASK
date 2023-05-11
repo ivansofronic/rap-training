@@ -1,0 +1,12 @@
+@EndUserText.label : 'Training task'
+@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #C
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table zis_a_task {
+  key client  : abap.clnt not null;
+  key taskid  : char20 not null;
+  name        : zis_taskname;
+  description : clsx_string_250;
+
+}
