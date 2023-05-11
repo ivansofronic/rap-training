@@ -1,0 +1,41 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Training interface view'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+@Search.searchable: true
+define root view entity ZIS_I_Training
+  as select from zis_a_training as Training
+
+  composition [0..*] of ZIS_I_Participant  as _Participant
+  composition [0..*] of ZIS_I_TrainingTask as _Task
+
+  association [1..1] to ZIS_I_Status       as _Status on $projection.Status = _Status.Status
+{
+      @ObjectModel.text.element: ['Name']
+      @Search.defaultSearchElement: true
+  key training_uuid         as TrainingUuid,
+
+      @Search.defaultSearchElement: true
+      name                  as Name,
+      @Search.defaultSearchElement: true
+      @ObjectModel.foreignKey.association: '_Status'
+      @Consumption.valueHelpDefinition: [{entity:{name: 'ZIS_I_Status', element: 'Status' }}]
+      status                as Status,
+      valid_to              as ValidTo,
+      created_by            as CreatedBy,
+      created_at            as CreatedAt,
+      last_changed_by       as LastChangedBy,
+      last_changed_at       as LastChangedAt,
+      local_last_changed_at as LocalLastChangedAt,
+      case when created_at is initial then $session.system_date end as KeyDate,
+
+      /* Associations */
+      _Participant,
+      _Status,
+      _Task
+}
