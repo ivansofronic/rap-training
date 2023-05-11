@@ -1,0 +1,29 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'Training participan interface view'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+  serviceQuality: #X,
+  sizeCategory: #S,
+  dataClass: #MIXED
+}
+@Search.searchable: true
+define view entity ZIS_I_Participant 
+  as select from zis_a_trpart as Participant
+  
+  association to parent ZIS_I_Training as _Training on $projection.TrainingUuid = _Training.TrainingUuid
+  composition [0..*] of ZIS_I_ParticTask as _ParticipantTask 
+  association [1..1] to I_BusinessPartner as _Partner on $projection.Participant = _Partner.BusinessPartner
+{
+  @Search.defaultSearchElement: true
+  key training_uuid as TrainingUuid,
+  @Search.defaultSearchElement: true
+  @ObjectModel.text.element: ['_Partner.BusinessPartnerFullName']
+  @Consumption.valueHelpDefinition: [{entity:{name: 'I_BusinessPartnerVH', element: 'BusinessPartner' }}]
+  key participant   as Participant,
+//      total_points  as TotalPoints,
+      
+      _Training,
+      _ParticipantTask,
+      _Partner
+}
